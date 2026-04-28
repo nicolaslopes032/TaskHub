@@ -64,7 +64,7 @@ function App() {
 
   return (
     <>
-      <h1>TaskHub</h1>
+      <h1><span>Task</span>Hub</h1>
       <div className="progress-card">
     <div className="progress-info">
       <div className="progress-label">PROGRESSO_GERAL</div>
