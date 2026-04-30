@@ -1,9 +1,10 @@
 import './App.css'
-import { useState, useEffect } from 'react' 
+import { useState, useEffect, useRef } from 'react'
 
 function App() {
-    const [tasks, setTasks] = useState([])
-    const [filter, setFilterState] = useState('all')
+  const [tasks, setTasks] = useState([])
+  const [filter, setFilterState] = useState('all')
+  const isFirstRender = useRef(true)
 
   // Carregar tarefas do localStorage ao montar o componente
   useEffect(() => {
@@ -14,7 +15,12 @@ function App() {
   }, [])
 
   // Salvar tarefas no localStorage sempre que mudarem
+  // (ignora a primeira renderização para não sobrescrever com lista vazia)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
     localStorage.setItem('tasks', JSON.stringify(tasks))
   }, [tasks])
 
@@ -66,20 +72,20 @@ function App() {
     <>
       <h1><span>Task</span>Hub</h1>
       <div className="progress-card">
-    <div className="progress-info">
-      <div className="progress-label">PROGRESSO_GERAL</div>
-      <div className="progress-bar-bg">
-        <div className="progress-bar-fill" id="progressBar" style={{width: `${progress}%`}}></div>
+        <div className="progress-info">
+          <div className="progress-label">PROGRESSO_GERAL</div>
+          <div className="progress-bar-bg">
+            <div className="progress-bar-fill" id="progressBar" style={{width: `${progress}%`}}></div>
+          </div>
+        </div>
+        <div style={{textAlign: 'right'}}>
+          <div className="progress-count" id="progressPct">
+            {progress}%
+            <div className="progress-subtext">concluído</div>
+          </div>
+          <div className="progress-pct" id="progressLabel">{tasks.filter(t => t.done).length} / {tasks.length} tarefas</div>
+        </div>
       </div>
-    </div>
-    <div style={{textAlign: 'right'}}>
-      <div className="progress-count" id="progressPct">
-        {progress}%
-        <div className="progress-subtext">concluído</div>
-      </div>
-      <div className="progress-pct" id="progressLabel">{tasks.filter(t => t.done).length} / {tasks.length} tarefas</div>
-    </div>
-  </div>
       
       <div className="input-row">
         <input className="task-input" id="taskInput" type="text" placeholder='Nova tarefa... Pressione Adicionar' />
@@ -112,12 +118,7 @@ function App() {
       </div>
  
       <div className="divider"></div>
-
-      
     </>
-
-
-    
   )
 }
 
